@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Christine Adelusi">
+    <meta name="description" content="How Christine Adelusi designed layered Kubernetes observability and HPA scaling with Prometheus, Grafana, CloudWatch, and load validation.">
+    <title>Building Kubernetes Observability and Autoscaling from the Start | Christine Adelusi</title>
+    <script>(()=>{const s=localStorage.getItem("portfolio-theme");document.documentElement.dataset.theme=s||(matchMedia("(prefers-color-scheme: light)").matches?"light":"dark");})();</script>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/portfolio-content.css">
+    <script src="../js/main.js" defer></script>
+</head>
+<body>
+    <a class="skip-link" href="#main-content">Skip to article content</a>
+    <header class="site-header">
+        <div class="container navigation">
+            <a class="brand" href="../index.html#home" aria-label="Go to portfolio homepage">
+                <span class="brand-mark" aria-hidden="true">CA</span>
+                <span class="brand-name">Christine Adelusi</span>
+            </a>
+            <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">
+                <span class="sr-only">Open navigation menu</span>
+                <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+            </button>
+            <nav id="primary-navigation" class="primary-navigation" aria-label="Primary navigation">
+                <ul>
+                    <li><a href="../index.html#about">About</a></li>
+                    <li><a href="../index.html#capabilities">Capabilities</a></li>
+                    <li><a href="../index.html#projects">Projects</a></li>
+                    <li><a class="is-current" href="../index.html#writing" aria-current="page">Writing</a></li>
+                    <li><a href="../index.html#approach">Approach</a></li>
+                    <li><button id="theme-toggle" class="theme-toggle" type="button" aria-label="Switch to light theme" title="Switch color theme"><span class="theme-toggle-icon" aria-hidden="true">☀</span><span class="theme-toggle-text">Light</span></button></li>
+                    <li><a href="../index.html#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+<main id="main-content" class="article-page"><article class="article-container">
+    <a class="article-back" href="../index.html#writing">← Back to writing</a>
+    <header class="article-header">
+        <p class="section-label">Observability and scaling</p>
+        <h1>Building Observability and Autoscaling into Kubernetes from the Start</h1>
+        <p class="article-summary">How I combined Kubernetes-native metrics, AWS infrastructure monitoring, actionable alerting, and load-tested HPA behavior in an EKS operations platform.</p>
+        <p class="article-byline">September 11, 2026 · 10 min read · Christine Adelusi</p>
+    </header>
+    <nav class="table-of-contents" aria-label="Table of contents"><strong>Table of contents</strong><ol>
+        <li><a href="#beyond-deployment">Deployment is not the finish line</a></li>
+        <li><a href="#architecture">The layered architecture</a></li>
+        <li><a href="#signals">Metrics, dashboards, and alerts</a></li>
+        <li><a href="#hpa">Designing HPA behavior</a></li>
+        <li><a href="#testing">Validating scaling under load</a></li>
+        <li><a href="#incidents">Supporting incident response</a></li>
+        <li><a href="#lessons">Lessons learned</a></li>
+    </ol></nav>
+    <div class="article-body">
+        <h2 id="beyond-deployment">Deployment is not the finish line</h2>
+        <p>When I began this project, I wanted to focus on what happens after a workload reaches Kubernetes. A successful deployment proves that resources were accepted and containers started. It does not prove that the application is healthy under load, that operators can diagnose a failure, or that scaling will behave as expected.</p>
+        <p>I built the Kubernetes Observability and Scaling Platform to complement my infrastructure and GitOps work. The repository concentrates on the operational side of Amazon EKS: collecting metrics, visualizing workload behavior, monitoring AWS infrastructure, defining useful alerts, and examining how Horizontal Pod Autoscaler responds to demand.</p>
+        <div class="article-callout"><strong>Core principle:</strong> observability and autoscaling are platform capabilities that must be designed and validated—not features to add after deployment.</div>
+
+        <h2 id="architecture">The layered observability architecture</h2>
+        <p>I intentionally used both Kubernetes-native and AWS-native monitoring because neither layer provides the complete runtime picture on its own.</p>
+        <ul>
+            <li><strong>Prometheus</strong> is the primary in-cluster metrics system. It collects time-series data from workloads, cluster components, and application endpoints that expose metrics.</li>
+            <li><strong>Grafana</strong> turns those metrics into dashboards for workload health, resource utilization, application trends, cluster behavior, and scaling analysis.</li>
+            <li><strong>CloudWatch</strong> provides infrastructure metrics, logs, events, alarms, and visibility into the AWS resources supporting the EKS platform.</li>
+            <li><strong>HPA</strong> converts measured workload demand into controlled changes in pod replica count.</li>
+        </ul>
+        <figure class="article-figure"><img src="https://xtinead.github.io/kubernetes-observability-and-scaling-platform/assets/images/01-observability-architecture.png" alt="Layered EKS observability architecture using Prometheus, Grafana, CloudWatch, and HPA"><figcaption>The architecture combines workload-level and AWS infrastructure-level visibility.</figcaption></figure>
+        <p>This separation matters during diagnosis. An unhealthy pod may be caused by the application, resource pressure, a cluster component, or an underlying AWS condition. Prometheus and Grafana expose what is happening inside Kubernetes; CloudWatch adds the infrastructure context surrounding it.</p>
+
+        <h2 id="signals">Metrics, dashboards, and alerts serve different purposes</h2>
+        <p>I treated metrics, dashboards, and alerts as related but distinct operational tools.</p>
+        <h3>Metrics preserve evidence</h3>
+        <p>Prometheus stores time-series signals such as CPU usage, memory usage, pod health, request throughput, error rates, and workload behavior. Historical data makes it possible to compare current symptoms with earlier platform behavior instead of relying only on the present state.</p>
+        <h3>Dashboards support investigation</h3>
+        <p>Grafana provides the visual context needed to identify trends, correlate resource use with application activity, examine scaling events, and investigate bottlenecks. A dashboard helps an operator ask better questions; it does not decide which conditions deserve an interruption.</p>
+        <h3>Alerts demand action</h3>
+        <p>The alerting strategy uses AWS-native alarms and operational thresholds to surface conditions tied to real risk. I documented that alerts should be actionable, useful during incident response, and limited enough to avoid noise.</p>
+        <figure class="article-figure"><img src="https://xtinead.github.io/kubernetes-observability-and-scaling-platform/assets/images/02-metrics-and-alerting-flow.png" alt="Metrics collection, dashboard visualization, and alerting flow"><figcaption>Collected signals support both investigation through dashboards and response through alerts.</figcaption></figure>
+        <div class="article-callout"><strong>Alerting lesson:</strong> if an operator cannot explain what action an alert should trigger, the threshold or the alert itself needs more design work.</div>
+
+        <h2 id="hpa">Designing HPA as operational behavior</h2>
+        <p>Horizontal Pod Autoscaler evaluates workload signals such as CPU utilization, memory usage where configured, and sustained application demand. When a threshold is exceeded, Kubernetes increases the number of replicas; after demand falls, it can reduce them again.</p>
+        <p>The YAML object is only the starting point. Meaningful autoscaling requires deliberate choices for minimum replicas, maximum replicas, thresholds, and stabilization behavior. Resource requests also matter because utilization-based scaling depends on an appropriate baseline.</p>
+        <p>I therefore viewed HPA as a feedback loop:</p>
+        <ol><li>The workload receives increasing demand.</li><li>Resource consumption changes.</li><li>The metrics pipeline makes that change available.</li><li>HPA evaluates actual values against the target.</li><li>Kubernetes changes the desired replica count.</li><li>New pods start and become ready.</li><li>Operators observe whether availability and resource behavior improve.</li></ol>
+        <figure class="article-figure"><img src="https://xtinead.github.io/kubernetes-observability-and-scaling-platform/assets/images/03-hpa-autoscaling-flow.png" alt="Horizontal Pod Autoscaler feedback loop under changing demand"><figcaption>Autoscaling connects workload demand, observable metrics, HPA decisions, and replica changes.</figcaption></figure>
+
+        <h2 id="testing">Validating scaling under load</h2>
+        <p>One of the strongest lessons from this project was that an HPA configuration should not be considered complete merely because it exists. I documented load simulation as the mechanism for checking whether runtime behavior matches the design.</p>
+        <p>During a scaling validation, I want to observe:</p>
+        <ul><li>the demand level that triggers scale-out;</li><li>how long it takes metrics and HPA to react;</li><li>whether additional replicas become ready;</li><li>resource utilization during the transition;</li><li>whether the workload remains available;</li><li>how long stabilization takes after demand falls; and</li><li>whether replicas eventually scale back in without oscillation.</li></ul>
+        <p>This closes an important gap between configuration and evidence. A threshold that looks reasonable in a manifest may react too slowly, scale too aggressively, or produce unstable behavior when tested.</p>
+
+        <h2 id="incidents">How the design supports incident response</h2>
+        <p>I used a short set of operational questions to evaluate whether the monitoring model was useful:</p>
+        <ul><li>Are the workloads healthy?</li><li>Are pods under resource pressure?</li><li>Is scaling occurring?</li><li>Are infrastructure alarms firing?</li><li>What changed recently?</li></ul>
+        <p>Grafana supports workload and cluster investigation. Prometheus supplies metric history. CloudWatch provides infrastructure alarms and AWS context. Together, these tools reduce the time spent proving where a problem is not and help narrow the next troubleshooting action.</p>
+        <p>The architecture also reinforces the value of connecting observability with delivery information. Metrics show symptoms, while recent GitOps or infrastructure changes provide context about what may have introduced them.</p>
+
+        <h2 id="lessons">Lessons learned</h2>
+        <h3>Observability must be designed</h3><p>Adding a dashboard at the end of a project does not guarantee useful visibility. The platform and workload must expose signals that correspond to health, capacity, and operational risk.</p>
+        <h3>Workload and infrastructure monitoring are complementary</h3><p>Prometheus and Grafana explain behavior inside Kubernetes, while CloudWatch explains conditions in the AWS environment supporting it. Reliable diagnosis needs both perspectives.</p>
+        <h3>Autoscaling is not the same as capacity planning</h3><p>HPA can add pods only within configured boundaries and available cluster capacity. Maximum replicas, node capacity, requests, limits, readiness, and external dependencies still constrain the system.</p>
+        <h3>Scaling should be observable and testable</h3><p>An operator should be able to see why the replica count changed, whether the response helped, and when the platform returned to a stable state. Load testing provides the evidence that the control loop behaves as intended.</p>
+        <p>This project changed how I define a complete Kubernetes platform. Deployment makes a workload available. Observability makes its behavior understandable. Alerting makes risk actionable. Tested autoscaling allows the platform to respond to demand with controlled, visible behavior.</p>
+        <section class="article-resources"><h2>Related project documentation</h2><ul>
+            <li><a href="https://github.com/xtinead/kubernetes-observability-and-scaling-platform">Kubernetes Observability and Scaling Platform repository</a></li>
+            <li><a href="https://xtinead.github.io/kubernetes-observability-and-scaling-platform/observability-architecture.html">Observability architecture</a></li>
+            <li><a href="https://xtinead.github.io/kubernetes-observability-and-scaling-platform/hpa-scaling-behavior.html">HPA scaling behavior</a></li>
+            <li><a href="https://xtinead.github.io/kubernetes-observability-and-scaling-platform/alerting-strategy.html">Alerting strategy</a></li>
+            <li><a href="https://xtinead.github.io/kubernetes-observability-and-scaling-platform/incident-response-notes.html">Incident response notes</a></li>
+        </ul></section>
+    </div>
+</article></main>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Christine Adelusi">
+    <meta name="description" content="A cost-aware comparison of Amazon ECS and Amazon EKS based on Christine Adelusi's Clixx container platform projects.">
+    <title>ECS or EKS? Choosing with Cost in Mind | Christine Adelusi</title>
+    <script>(()=>{const s=localStorage.getItem("portfolio-theme");document.documentElement.dataset.theme=s||(matchMedia("(prefers-color-scheme: light)").matches?"light":"dark");})();</script>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/portfolio-content.css">
+    <script src="../js/main.js" defer></script>
+</head>
+<body>
+    <a class="skip-link" href="#main-content">Skip to article content</a>
+    <header class="site-header">
+        <div class="container navigation">
+            <a class="brand" href="../index.html#home" aria-label="Go to portfolio homepage">
+                <span class="brand-mark" aria-hidden="true">CA</span>
+                <span class="brand-name">Christine Adelusi</span>
+            </a>
+            <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">
+                <span class="sr-only">Open navigation menu</span>
+                <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+            </button>
+            <nav id="primary-navigation" class="primary-navigation" aria-label="Primary navigation">
+                <ul>
+                    <li><a href="../index.html#about">About</a></li>
+                    <li><a href="../index.html#capabilities">Capabilities</a></li>
+                    <li><a href="../index.html#projects">Projects</a></li>
+                    <li><a class="is-current" href="../index.html#writing" aria-current="page">Writing</a></li>
+                    <li><a href="../index.html#approach">Approach</a></li>
+                    <li><button id="theme-toggle" class="theme-toggle" type="button" aria-label="Switch to light theme" title="Switch color theme"><span class="theme-toggle-icon" aria-hidden="true">☀</span><span class="theme-toggle-text">Light</span></button></li>
+                    <li><a href="../index.html#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+<main id="main-content" class="article-page"><article class="article-container">
+    <a class="article-back" href="../index.html#writing">← Back to writing</a>
+    <header class="article-header">
+        <p class="section-label">AWS architecture and cost</p>
+        <h1>ECS or EKS? Choosing an AWS Container Platform with Cost in Mind</h1>
+        <p class="article-summary">What building Clixx on both Amazon ECS and Amazon EKS taught me about orchestration capability, operational responsibility, and the cost of maintaining cloud platforms.</p>
+        <p class="article-byline">December 15, 2025 · 11 min read · Christine Adelusi</p>
+    </header>
+    <nav class="table-of-contents" aria-label="Table of contents"><strong>Table of contents</strong><ol>
+        <li><a href="#context">Why I built both platforms</a></li>
+        <li><a href="#ecs">My ECS implementation</a></li>
+        <li><a href="#eks">My EKS implementation</a></li>
+        <li><a href="#comparison">What actually changes</a></li>
+        <li><a href="#cost">The complete cost question</a></li>
+        <li><a href="#decision">My decision framework</a></li>
+        <li><a href="#lessons">Lessons learned</a></li>
+    </ol></nav>
+    <div class="article-body">
+        <h2 id="context">Why I built both platforms</h2>
+        <p>I did not build an ECS platform and an EKS platform to declare one service universally better. I built them to understand how the same application changes when the orchestration layer, delivery model, and operational boundary change.</p>
+        <p>My first Clixx container platform ran WordPress on Amazon ECS using EC2 capacity. I later evolved the workload into a production-style EKS GitOps platform using Terraform, Jenkins, Kubernetes, and Argo CD. Working through both implementations made the tradeoff more concrete than a feature checklist.</p>
+        <div class="article-callout"><strong>My conclusion:</strong> the right platform is the least complex option that satisfies the workload, governance, portability, and operating-model requirements.</div>
+
+        <h2 id="ecs">My ECS implementation</h2>
+        <p>The ECS version used an ECS cluster, service, and task definition to run the Clixx WordPress container. Images were stored in Amazon ECR. The service used EC2-backed cluster capacity, with an Auto Scaling group configured to maintain the required instances. Application data remained outside the containers in Amazon RDS.</p>
+        <p>Jenkins orchestrated the delivery workflow, and Terraform managed the AWS infrastructure. ECS gave me AWS-native service scheduling without requiring me to install or manage a Kubernetes control plane, Kubernetes add-ons, manifests, or cluster reconciliation tooling.</p>
+        <p>That did not make the environment operationally free. I still had to reason about EC2 capacity, task placement, security groups, IAM roles, load balancing, container health, image versions, RDS connectivity, scaling, and replacement behavior. ECS reduced one category of complexity; it did not eliminate platform engineering.</p>
+
+        <h2 id="eks">My EKS implementation</h2>
+        <p>The EKS platform served a broader engineering goal. I wanted Kubernetes orchestration, a pull-based GitOps delivery model, workload identity, declarative configuration, and a clear separation between CI and production reconciliation.</p>
+        <p>Terraform provisioned the VPC, EKS cluster, IAM resources, ALB ingress infrastructure, EFS, and RDS where required. Jenkins validated changes and built immutable images, but it did not deploy directly to Kubernetes. Argo CD pulled the desired state from Git and reconciled the cluster.</p>
+        <p>EKS enabled capabilities that were central to this project: Kubernetes objects and controllers, environment overlays, Argo CD drift detection, Git-revert rollback, OIDC-based workload identity, ingress integration, and Kubernetes-native observability and autoscaling.</p>
+        <p>Those capabilities introduced a larger operating surface. I had to manage the cluster and worker nodes as well as controllers, add-ons, manifests, ingress, storage integration, RBAC, resource requests and limits, health probes, and GitOps configuration.</p>
+
+        <h2 id="comparison">What actually changes between ECS and EKS</h2>
+        <div class="comparison-table-wrapper"><table class="article-comparison-table">
+            <thead><tr><th>Decision area</th><th>ECS in my project</th><th>EKS in my project</th></tr></thead>
+            <tbody>
+                <tr><td>Orchestration model</td><td>AWS-native services and tasks</td><td>Kubernetes resources and controllers</td></tr>
+                <tr><td>Compute</td><td>EC2 capacity managed through an Auto Scaling group</td><td>EKS worker nodes managed as a node group</td></tr>
+                <tr><td>Delivery</td><td>Jenkins-led AWS deployment workflow</td><td>Jenkins builds; Argo CD reconciles from Git</td></tr>
+                <tr><td>Desired state</td><td>Task and service configuration</td><td>GitOps manifests and environment overlays</td></tr>
+                <tr><td>Scaling</td><td>Service and EC2 capacity considerations</td><td>Pod scaling plus node capacity considerations</td></tr>
+                <tr><td>Operational surface</td><td>AWS container-service concepts</td><td>Kubernetes, AWS integration, and GitOps components</td></tr>
+                <tr><td>Best fit demonstrated</td><td>AWS-focused container application platform</td><td>Kubernetes platform with governed GitOps delivery</td></tr>
+            </tbody>
+        </table></div>
+        <p>The comparison is therefore not “simple versus advanced.” It is a question of which abstractions the team wants to own. ECS places more of the scheduler experience behind AWS service APIs. EKS exposes Kubernetes as the platform contract and gives the team access to its ecosystem, while requiring the team to operate that larger system responsibly.</p>
+
+        <h2 id="cost">The complete cost question</h2>
+        <p>Cost was a major concern for me because these platforms needed to demonstrate production-style decisions without remaining unnecessarily expensive. The visible compute bill is only one part of the decision.</p>
+        <h3>Direct infrastructure cost</h3>
+        <p>Both designs can include worker compute, load balancers, container images, persistent storage, databases, NAT or other network processing, logs, metrics, and data transfer. EKS also has a separately priced managed cluster control plane. The exact total depends on architecture and runtime usage, so I avoid treating either service name as a complete cost estimate.</p>
+        <h3>Idle cost</h3>
+        <p>A portfolio environment may spend more time waiting than serving traffic. Fixed components continue to incur cost even when application demand is low. That makes teardown capability, minimum capacity, and the decision to keep RDS, load balancers, NAT gateways, or worker nodes active especially important.</p>
+        <h3>Operational cost</h3>
+        <p>EKS gave me valuable Kubernetes and GitOps capabilities, but every controller, add-on, integration, and upgrade path adds work. ECS can reduce Kubernetes-specific maintenance, which may be economically important for a small team whose requirements are already satisfied by AWS-native orchestration.</p>
+        <h3>Complexity cost</h3>
+        <p>A platform can be inexpensive on the monthly invoice and still be costly if engineers spend excessive time diagnosing it. Conversely, a more capable platform can be justified when it standardizes delivery across many services or supports requirements the simpler option cannot meet.</p>
+        <div class="article-callout"><strong>Cost-aware architecture is not choosing the cheapest individual service.</strong> It is matching platform capability to actual requirements and accounting for infrastructure, idle resources, engineering effort, and recovery.</div>
+
+        <h2>How I controlled portfolio costs</h2>
+        <ul>
+            <li><strong>Infrastructure as Code:</strong> Terraform made environments reproducible instead of forcing me to keep them running as proof that they existed.</li>
+            <li><strong>Teardown and rebuild documentation:</strong> I treated controlled destruction and reconstruction as platform capabilities.</li>
+            <li><strong>Persistent-state separation:</strong> application data and Terraform state were handled deliberately so compute could be replaced safely.</li>
+            <li><strong>Capacity limits:</strong> minimum, desired, and maximum compute settings prevented unbounded growth.</li>
+            <li><strong>Observability:</strong> metrics and logs helped distinguish required capacity from guesswork.</li>
+            <li><strong>AWS budget awareness:</strong> billing alerts and routine resource review reduce the chance that forgotten infrastructure remains active.</li>
+        </ul>
+
+        <h2 id="decision">My decision framework</h2>
+        <h3>I would lean toward ECS when:</h3>
+        <ul><li>The workload is AWS-centered and does not require Kubernetes APIs.</li><li>The team wants container scheduling with a smaller Kubernetes-specific operational burden.</li><li>AWS-native integration satisfies the delivery and governance model.</li><li>The scale and number of services do not justify a broader internal Kubernetes platform.</li></ul>
+        <h3>I would lean toward EKS when:</h3>
+        <ul><li>Kubernetes is an intentional organizational platform contract.</li><li>GitOps reconciliation and the Kubernetes controller ecosystem are requirements.</li><li>Workload portability or Kubernetes-native tooling has real value.</li><li>The team can own cluster lifecycle, upgrades, security, add-ons, and observability.</li></ul>
+        <p>I would not choose EKS only because Kubernetes is widely requested in job descriptions, and I would not choose ECS only because it appears simpler. I would document the workload and team requirements, estimate the complete operating cost, and choose the option whose additional complexity produces measurable value.</p>
+
+        <h2 id="lessons">Lessons learned</h2>
+        <p>Building both platforms reinforced that architecture decisions should be contextual. ECS demonstrated how I could deliver a stateful containerized application using AWS-native orchestration. EKS demonstrated how I could design a Kubernetes platform with pull-based GitOps, credential separation, drift detection, and declarative rollback.</p>
+        <p>The EKS platform was the stronger choice for demonstrating the full GitOps operating model. That does not mean it would be the responsible choice for every workload. For a smaller AWS-only application, ECS may provide the required reliability and automation with fewer platform components to secure and maintain.</p>
+        <p>The senior engineering decision is not selecting the tool with the longest feature list. It is understanding what the system needs, what the team can operate, what failure and recovery look like, and whether the continuing cost is justified.</p>
+        <section class="article-resources"><h2>Related portfolio work</h2><ul>
+            <li><a href="https://github.com/xtinead/clixx-gitops-platform">Clixx GitOps Platform repository</a></li>
+            <li><a href="https://xtinead.github.io/clixx-gitops-platform/platform-infra/architecture.html">EKS platform infrastructure architecture</a></li>
+            <li><a href="https://xtinead.github.io/clixx-gitops-platform/platform-evolution.html">Platform evolution</a></li>
+            <li><a href="https://xtinead.github.io/clixx-gitops-platform/platform-infra/teardown-rebuild.html">Teardown and rebuild strategy</a></li>
+        </ul></section>
+    </div>
+</article></main>
+</body></html>

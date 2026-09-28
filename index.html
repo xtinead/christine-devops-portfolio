@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Christine Adelusi is a Senior DevOps and Platform Engineer specializing in AWS, Terraform, Kubernetes, Jenkins, GitOps, CI/CD, observability, security, and automation."
+    >
+
+    <meta name="author" content="Christine Adelusi">
+
+    <link
+        rel="canonical"
+        href="https://xtinead.github.io/christine-devops-portfolio/"
+    >
+
+    <meta property="og:type" content="website">
+    <meta
+        property="og:url"
+        content="https://xtinead.github.io/christine-devops-portfolio/"
+    >
+    <meta
+        property="og:title"
+        content="Christine Adelusi | Senior DevOps & Platform Engineer"
+    >
+    <meta
+        property="og:description"
+        content="AWS and Kubernetes platform engineering portfolio featuring Terraform, Jenkins, GitOps, observability, security, and reliability projects."
+    >
+    <meta
+        property="og:image"
+        content="https://xtinead.github.io/christine-devops-portfolio/assets/images/christine-adelusi-portfolio-preview.png"
+    >
+    <meta
+        property="og:image:alt"
+        content="Christine Adelusi Senior DevOps and Platform Engineer portfolio"
+    >
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta
+        name="twitter:title"
+        content="Christine Adelusi | Senior DevOps & Platform Engineer"
+    >
+    <meta
+        name="twitter:description"
+        content="AWS and Kubernetes platform engineering portfolio featuring Terraform, Jenkins, GitOps, observability, security, and reliability projects."
+    >
+    <meta
+        name="twitter:image"
+        content="https://xtinead.github.io/christine-devops-portfolio/assets/images/christine-adelusi-portfolio-preview.png"
+    >
+
+    <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
+
+    <title>
+        Christine Adelusi | Senior DevOps & Platform Engineer
+    </title>
+
+    <script>
+    /*
+     * Apply the saved or system-preferred theme before the page
+     * becomes visible. This prevents a light-theme flash.
+     */
+    (() => {
+        const savedTheme = localStorage.getItem("portfolio-theme");
+
+        const preferredTheme = window.matchMedia(
+            "(prefers-color-scheme: light)"
+        ).matches
+            ? "light"
+            : "dark";
+
+        document.documentElement.dataset.theme =
+            savedTheme || preferredTheme;
+    })();
+</script>
+
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/portfolio-content.css">
+<script src="js/main.js" defer></script>
+</head>
+
+<body>
+    <a class="skip-link" href="#main-content">
+        Skip to main content
+    </a>
+
+    <header class="site-header">
+        <div class="container navigation">
+            <a class="brand" href="#home" aria-label="Go to homepage">
+                <span class="brand-mark" aria-hidden="true">CA</span>
+                <span class="brand-name">Christine Adelusi</span>
+            </a>
+
+            <button
+                class="menu-toggle"
+                type="button"
+                aria-expanded="false"
+                aria-controls="primary-navigation"
+            >
+                <span class="sr-only">Open navigation menu</span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </button>
+
+            <nav
+                id="primary-navigation"
+                class="primary-navigation"
+                aria-label="Primary navigation"
+            >
+                <ul>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#capabilities">Capabilities</a></li>
+                    <li><a href="#projects">Projects</a></li>
+                    <li><a href="#writing">Writing</a></li>
+                    <li><a href="#approach">Approach</a></li>
+
+                    <li>
+                        <button
+                            id="theme-toggle"
+                            class="theme-toggle"
+                            type="button"
+                            aria-label="Switch to light theme"
+                            title="Switch color theme"
+                        >
+                            <span
+                                class="theme-toggle-icon"
+                                aria-hidden="true"
+                            >
+                                ☀
+                            </span>
+
+                            <span class="theme-toggle-text">
+                                Light
+                            </span>
+                        </button>
+                    </li>
+
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main-content">
+        <section id="home" class="hero">
+            <div class="container hero-layout">
+                <div class="hero-content">
+                    <p class="eyebrow">
+                        Senior DevOps &amp; Platform Engineer
+                    </p>
+
+                    <h1>
+                        Building secure, scalable, and reliable
+                        cloud platforms.
+                    </h1>
+
+                    <p class="hero-summary">
+                        I design and automate production-style AWS and
+                        Kubernetes platforms using infrastructure as code,
+                        CI/CD, GitOps, observability, and security-first
+                        engineering practices.
+                    </p>
+
+                    <div class="hero-actions">
+                        <a class="button button-primary" href="#projects">
+                            Explore my projects
+                        </a>
+
+                        <a class="button button-secondary" href="#capabilities">
+                            View my capabilities
+                        </a>
+                    </div>
+                </div>
+
+                <aside
+                    class="platform-summary"
+                    aria-label="Platform delivery lifecycle"
+                >
+                    <p class="platform-summary-label">
+                        Platform delivery lifecycle
+                    </p>
+
+                    <ol class="delivery-lifecycle">
+                        <li>
+                            <span class="lifecycle-number">01</span>
+                            <div>
+                                <strong>Provision</strong>
+                                <span>Terraform and Ansible</span>
+                            </div>
+                        </li>
+
+                        <li>
+                            <span class="lifecycle-number">02</span>
+                            <div>
+                                <strong>Build</strong>
+                                <span>Jenkins, Docker, and ECR</span>
+                            </div>
+                        </li>
+
+                        <li>
+                            <span class="lifecycle-number">03</span>
+                            <div>
+                                <strong>Deploy</strong>
+                                <span>Argo CD and Kubernetes</span>
+                            </div>
+                        </li>
+
+                        <li>
+                            <span class="lifecycle-number">04</span>
+                            <div>
+                                <strong>Observe</strong>
+                                <span>Prometheus, Grafana, and CloudWatch</span>
+                            </div>
+                        </li>
+                    </ol>
+                </aside>
+            </div>
+        </section>
+
+        <section
+            class="technology-banner"
+            aria-label="Primary technology areas"
+        >
+            <div class="container">
+                <ul>
+                    <li>AWS</li>
+                    <li>Terraform</li>
+                    <li>Kubernetes</li>
+                    <li>Jenkins</li>
+                    <li>GitOps</li>
+                    <li>Observability</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="about" class="section about-section">
+            <div class="container about-layout">
+                <div class="about-portrait">
+                    <img
+                        class="portrait-image"
+                        src="assets/images/christine-adelusi-headshot.jpg"
+                        alt="Christine Adelusi, Senior DevOps and Platform Engineer"
+                        loading="lazy"
+                        decoding="async"
+                     >
+                </div>
+
+                <div class="about-content">
+                    <p class="section-label">About me</p>
+
+                    <h2>
+                        Building cloud platforms with reliability,
+                        security, and operational clarity in mind.
+                    </h2>
+
+                    <div class="about-copy">
+                        <p>
+                            I am a DevOps and Platform Engineer focused on
+                            building secure, repeatable, and observable systems
+                            on AWS. My work spans cloud architecture,
+                            infrastructure as code, continuous delivery,
+                            container platforms, networking, security, and
+                            operational automation.
+                        </p>
+
+                        <p>
+                            Across my projects, I have designed AWS foundations
+                            with Terraform, created Jenkins delivery pipelines,
+                            implemented GitOps workflows with Argo CD, operated
+                            Kubernetes and ECS platforms, and built monitoring
+                            and autoscaling capabilities using Prometheus,
+                            Grafana, CloudWatch, and Kubernetes HPA.
+                        </p>
+
+                        <p>
+                            I approach platform engineering as more than
+                            deploying infrastructure. I consider how a system
+                            will be secured, observed, recovered, maintained,
+                            and operated within realistic cost constraints.
+                        </p>
+                    </div>
+
+                    <ul
+                        class="about-principles"
+                        aria-label="Engineering priorities"
+                    >
+                        <li>Automation over manual repetition</li>
+                        <li>Security and recovery by design</li>
+                        <li>Observable production systems</li>
+                        <li>Cost-aware architecture decisions</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+       <section id="capabilities" class="section capabilities-section">
+    <div class="container">
+        <div class="section-heading">
+            <p class="section-label">
+                Core capabilities
+            </p>
+
+            <h2>
+                Platform engineering across the complete delivery
+                lifecycle.
+            </h2>
+
+            <p>
+                I design cloud foundations, automate infrastructure and
+                delivery, operate container platforms, and build
+                observability, security, recovery, and cost awareness
+                into the platform lifecycle.
+            </p>
+        </div>
+
+        <div class="capabilities-grid">
+            <!-- Capability 01 -->
+            <article class="capability-card">
+                <p class="card-label">
+                    Cloud foundations
+                </p>
+
+                <h3>AWS Architecture</h3>
+
+                <p>
+                    Secure and resilient AWS environments designed around
+                    network isolation, availability, persistent services,
+                    workload requirements, and recoverable infrastructure.
+                </p>
+
+                <ul class="technology-list">
+                    <li>VPC</li>
+                    <li>EC2</li>
+                    <li>ECS</li>
+                    <li>EKS</li>
+                    <li>ECR</li>
+                    <li>RDS</li>
+                    <li>EFS</li>
+                    <li>S3</li>
+                </ul>
+            </article>
+
+            <!-- Capability 02 -->
+            <article class="capability-card">
+                <p class="card-label">
+                    Repeatable systems
+                </p>
+
+                <h3>
+                    Infrastructure as Code
+                </h3>
+
+                <p>
+                    Modular and environment-aware infrastructure with
+                    remote state, reusable components, reviewable
+                    changes, immutable images, and controlled promotion.
+                </p>
+
+                <ul class="technology-list">
+                    <li>Terraform</li>
+                    <li>Ansible</li>
+                    <li>Packer</li>
+                    <li>S3 State</li>
+                    <li>DynamoDB</li>
+                    <li>Modules</li>
+                </ul>
+            </article>
+
+            <!-- Capability 03 -->
+            <article class="capability-card">
+                <p class="card-label">
+                    Automated delivery
+                </p>
+
+                <h3>CI/CD and GitOps</h3>
+
+                <p>
+                    Automated build and delivery workflows with quality
+                    checks, immutable artifacts, approval boundaries,
+                    pull-based deployment, and Git-controlled production
+                    state.
+                </p>
+
+                <ul class="technology-list">
+                    <li>Jenkins</li>
+                    <li>Argo CD</li>
+                    <li>GitHub</li>
+                    <li>GitHub Actions</li>
+                    <li>SonarQube</li>
+                    <li>Git</li>
+                </ul>
+            </article>
+
+            <!-- Capability 04 -->
+            <article class="capability-card">
+                <p class="card-label">
+                    Container platforms
+                </p>
+
+                <h3>
+                    Containers and Orchestration
+                </h3>
+
+                <p>
+                    Container platforms with declarative workloads,
+                    ingress, persistent storage, health probes,
+                    resource controls, release management, and
+                    automated scaling.
+                </p>
+
+                <ul class="technology-list">
+                    <li>Docker</li>
+                    <li>Kubernetes</li>
+                    <li>EKS</li>
+                    <li>ECS</li>
+                    <li>Helm</li>
+                    <li>HPA</li>
+                </ul>
+            </article>
+
+            <!-- Capability 05 -->
+            <article class="capability-card">
+                <p class="card-label">
+                    Production visibility
+                </p>
+
+                <h3>
+                    Observability and Scaling
+                </h3>
+
+                <p>
+                    Metrics, dashboards, alerts, and cloud-native
+                    telemetry that improve detection, diagnosis,
+                    capacity decisions, and workload scaling.
+                </p>
+
+                <ul class="technology-list">
+                    <li>Prometheus</li>
+                    <li>Grafana</li>
+                    <li>CloudWatch</li>
+                    <li>Metrics Server</li>
+                    <li>HPA</li>
+                    <li>Alerting</li>
+                </ul>
+            </article>
+
+            <!-- Capability 06 -->
+            <article class="capability-card">
+                <p class="card-label">
+                    Secure by design
+                </p>
+
+                <h3>
+                    Networking and Security
+                </h3>
+
+                <p>
+                    Identity-aware access, private network boundaries,
+                    controlled ingress, encrypted endpoints, workload
+                    identities, and least-privilege service access.
+                </p>
+
+                <ul class="technology-list">
+                    <li>IAM</li>
+                    <li>OIDC</li>
+                    <li>IRSA</li>
+                    <li>ALB</li>
+                    <li>ACM</li>
+                    <li>Route 53</li>
+                    <li>Security Groups</li>
+                </ul>
+            </article>
+
+            <!-- Capability 07 -->
+            <article class="capability-card">
+                <p class="card-label">
+                    Engineering automation
+                </p>
+
+                <h3>
+                    Programming and Data
+                </h3>
+
+                <p>
+                    Automation scripts, APIs, application services, and
+                    data integrations that connect platform workflows
+                    and reduce repetitive operational work.
+                </p>
+
+                <ul class="technology-list">
+                    <li>Python</li>
+                    <li>Bash</li>
+                    <li>SQL</li>
+                    <li>FastAPI</li>
+                    <li>Next.js</li>
+                    <li>PostgreSQL</li>
+                    <li>Redis</li>
+                </ul>
+            </article>
+
+            <!-- Capability 08 -->
+            <article class="capability-card">
+                <p class="card-label">
+                    Sustainable operations
+                </p>
+
+                <h3>
+                    Reliability and Cost Awareness
+                </h3>
+
+                <p>
+                    Platforms designed for rollback, reconstruction,
+                    drift control, backup, recovery, resource
+                    right-sizing, autoscaling, and responsible
+                    infrastructure teardown.
+                </p>
+
+                <ul class="technology-list">
+                    <li>Rollback</li>
+                    <li>Drift Detection</li>
+                    <li>Backups</li>
+                    <li>Disaster Recovery</li>
+                    <li>Autoscaling</li>
+                    <li>Cost Controls</li>
+                </ul>
+            </article>
+        </div>
+    </div>
+</section>
+
+ <section id="projects" class="section projects-section">
+    <div class="container">
+        <div class="section-heading">
+            <p class="section-label">
+                Selected projects
+            </p>
+
+            <h2>
+                Architecture decisions demonstrated through working
+                systems.
+            </h2>
+
+            <p>
+                These projects demonstrate cloud architecture,
+                infrastructure automation, container platforms, secure
+                delivery, observability, immutable infrastructure, and
+                cost-conscious engineering decisions.
+            </p>
+        </div>
+
+        <div class="projects-grid">
+            <!-- Project 01 -->
+            <article class="project-card project-card-featured">
+                <div class="project-card-header">
+                    <p class="project-number">
+                        Project 01
+                    </p>
+
+                    <span class="project-status">
+                        Featured
+                    </span>
+                </div>
+
+                <p class="card-label">
+                    Cloud-Native GitOps Platform
+                </p>
+
+                <h3>Clixx GitOps Platform</h3>
+
+                <p>
+                    A production-style Kubernetes platform separating
+                    infrastructure provisioning, continuous integration,
+                    and pull-based application delivery.
+                </p>
+
+                <ul class="project-highlights">
+                    <li>
+                        Jenkins builds and publishes immutable container
+                        images without direct production cluster access.
+                    </li>
+
+                    <li>
+                        Argo CD continuously reconciles Kubernetes
+                        resources from Git.
+                    </li>
+
+                    <li>
+                        Terraform provisions VPC, EKS, IAM, RDS, EFS,
+                        and supporting AWS services.
+                    </li>
+
+                    <li>
+                        Rollback, disaster recovery, security boundaries,
+                        and architecture decisions are documented.
+                    </li>
+                </ul>
+
+                <ul
+                    class="project-technologies"
+                    aria-label="Clixx GitOps technologies"
+                >
+                    <li>AWS</li>
+                    <li>Terraform</li>
+                    <li>EKS</li>
+                    <li>Kubernetes</li>
+                    <li>Jenkins</li>
+                    <li>Argo CD</li>
+                    <li>Docker</li>
+                    <li>RDS</li>
+                    <li>EFS</li>
+                </ul>
+
+                <div class="project-links">
+                    <a
+                        href="https://github.com/xtinead/clixx-gitops-platform"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        GitHub repository ↗
+                    </a>
+
+                    <a
+                        href="https://xtinead.github.io/clixx-gitops-platform/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Documentation site ↗
+                    </a>
+
+                    <a href="articles/jenkins-gitops.html">
+                        Read the case study →
+                    </a>
+                </div>
+            </article>
+
+            <!-- Project 02 -->
+            <article class="project-card">
+                <div class="project-card-header">
+                    <p class="project-number">
+                        Project 02
+                    </p>
+
+                    <span class="project-status">
+                        Completed
+                    </span>
+                </div>
+
+                <p class="card-label">
+                    Kubernetes Observability and Autoscaling
+                </p>
+
+                <h3>
+                    Kubernetes Observability and Scaling Platform
+                </h3>
+
+                <p>
+                    A monitoring and autoscaling platform connecting
+                    application and infrastructure metrics to dashboards,
+                    alerts, and Kubernetes scaling decisions.
+                </p>
+
+                <ul
+                    class="project-technologies"
+                    aria-label="Observability platform technologies"
+                >
+                    <li>Kubernetes</li>
+                    <li>Prometheus</li>
+                    <li>Grafana</li>
+                    <li>CloudWatch</li>
+                    <li>Metrics Server</li>
+                    <li>HPA</li>
+                </ul>
+
+                <div class="project-links">
+                    <a
+                        href="https://github.com/xtinead/kubernetes-observability-and-scaling-platform"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        GitHub repository ↗
+                    </a>
+
+                    <a
+                        href="https://xtinead.github.io/kubernetes-observability-and-scaling-platform/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Documentation site ↗
+                    </a>
+
+                    <a href="articles/kubernetes-observability.html">
+                        Read the case study →
+                    </a>
+                </div>
+            </article>
+
+            <!-- Project 03 -->
+            <article class="project-card">
+                <div class="project-card-header">
+                    <p class="project-number">
+                        Project 03
+                    </p>
+
+                    <span class="project-status">
+                        Completed
+                    </span>
+                </div>
+
+                <p class="card-label">
+                    Cloud Networking and Security Foundation
+                </p>
+
+                <h3>
+                    AWS Platform Networking and Security
+                </h3>
+
+                <p>
+                    A multi-environment AWS foundation demonstrating
+                    subnet architecture, controlled traffic flows,
+                    environment isolation, security boundaries, and
+                    reusable Terraform modules.
+                </p>
+
+                <ul
+                    class="project-technologies"
+                    aria-label="Networking platform technologies"
+                >
+                    <li>AWS</li>
+                    <li>Terraform</li>
+                    <li>VPC</li>
+                    <li>ALB</li>
+                    <li>IAM</li>
+                    <li>Route 53</li>
+                    <li>ACM</li>
+                </ul>
+
+                <div class="project-links">
+                    <a
+                        href="https://github.com/xtinead/aws-platform-networking-and-security"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        GitHub repository ↗
+                    </a>
+
+                    <a
+                        href="https://xtinead.github.io/aws-platform-networking-and-security/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Documentation site ↗
+                    </a>
+                </div>
+            </article>
+
+            <!-- Project 04 -->
+            <article class="project-card">
+                <div class="project-card-header">
+                    <p class="project-number">
+                        Project 04
+                    </p>
+
+                    <span class="project-status">
+                        Completed
+                    </span>
+                </div>
+
+                <p class="card-label">
+                    Container Application Platform
+                </p>
+
+                <h3>AWS ECS Application Platform</h3>
+
+                <p>
+                    A containerized WordPress platform deployed through
+                    Jenkins to Amazon ECS on EC2 capacity, with images
+                    stored in Amazon ECR and application data maintained
+                    in Amazon RDS.
+                </p>
+
+                <ul
+                    class="project-technologies"
+                    aria-label="ECS platform technologies"
+                >
+                    <li>AWS</li>
+                    <li>ECS</li>
+                    <li>EC2</li>
+                    <li>ECR</li>
+                    <li>Jenkins</li>
+                    <li>Docker</li>
+                    <li>RDS</li>
+                    <li>Auto Scaling</li>
+                </ul>
+
+                <div class="project-links">
+                    <a href="articles/ecs-or-eks-cost.html">
+                        Read the case study →
+                    </a>
+                </div>
+
+            </article>
+
+            <!-- Project 05 -->
+            <article class="project-card">
+                <div class="project-card-header">
+                    <p class="project-number">
+                        Project 05
+                    </p>
+
+                    <span class="project-status">
+                        Completed
+                    </span>
+                </div>
+
+                <p class="card-label">
+                    Immutable Infrastructure Pipeline
+                </p>
+
+                <h3>Golden AMI Pipeline</h3>
+
+                <p>
+                    An automated image-building pipeline producing
+                    consistent and reusable Amazon Machine Images through
+                    versioned templates, configuration automation,
+                    validation, and controlled image promotion.
+                </p>
+
+                <ul
+                    class="project-technologies"
+                    aria-label="Golden AMI pipeline technologies"
+                >
+                    <li>Packer</li>
+                    <li>Jenkins</li>
+                    <li>Ansible</li>
+                    <li>AWS</li>
+                    <li>EC2</li>
+                    <li>AMI</li>
+                    <li>Bash</li>
+                </ul>
+
+                <div class="project-links">
+                    <a href="articles/golden-ami-pipeline.html">
+                        Read the case study →
+                    </a>
+                </div>
+            </article>
+
+            <!-- Project 06 -->
+            <article class="project-card">
+                <div class="project-card-header">
+                    <p class="project-number">
+                        Project 06
+                    </p>
+
+                    <span
+                        class="
+                            project-status
+                            project-status-development
+                        "
+                    >
+                        In development
+                    </span>
+                </div>
+
+                <p class="card-label">
+                    Platform Engineering Application
+                </p>
+
+                <h3>Platform Launchpad</h3>
+
+                <p>
+                    A multi-user platform engineering application
+                    demonstrating API boundaries, asynchronous work,
+                    persistent state, containerized development, delivery
+                    automation, and production operations.
+                </p>
+
+                <ul
+                    class="project-technologies"
+                    aria-label="Platform Launchpad technologies"
+                >
+                    <li>FastAPI</li>
+                    <li>Python</li>
+                    <li>Next.js</li>
+                    <li>PostgreSQL</li>
+                    <li>Redis</li>
+                    <li>Docker</li>
+                    <li>Jenkins</li>
+                </ul>
+
+                <div class="project-links">
+                    <a
+                        href="https://github.com/xtinead/platform-launchpad"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Application repository ↗
+                    </a>
+
+                    <a
+                        href="https://github.com/xtinead/platform-launchpad-gitops"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        GitOps repository ↗
+                    </a>
+
+                    <a
+                        href="https://github.com/xtinead/platform-launchpad/blob/main/docs/architecture/system-architecture.md"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Architecture docs ↗
+                    </a>
+                </div>
+            </article>
+
+            <!-- Project 07 -->
+            <article class="project-card">
+                <div class="project-card-header">
+                    <p class="project-number">
+                        Project 07
+                    </p>
+
+                    <span class="project-status">
+                        Completed
+                    </span>
+                </div>
+
+                <p class="card-label">
+                    Cloud Reliability and Disaster Recovery
+                </p>
+
+                <h3>
+                    AWS Platform Reliability and Resilience
+                </h3>
+
+                <p>
+                    A reliability-focused AWS platform demonstrating
+                    resilient architecture, backup and recovery
+                    strategies, operational readiness, and repeatable
+                    infrastructure reconstruction through Terraform.
+                </p>
+
+                <ul
+                    class="project-technologies"
+                    aria-label="Reliability and resilience platform technologies"
+                >
+                    <li>AWS</li>
+                    <li>Terraform</li>
+                    <li>Multi-AZ</li>
+                    <li>RDS</li>
+                    <li>EFS</li>
+                    <li>CloudWatch</li>
+                    <li>Disaster Recovery</li>
+                </ul>
+
+                <div class="project-links">
+                    <a
+                        href="https://github.com/xtinead/aws-platform-reliability-and-resilience"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        GitHub repository ↗
+                    </a>
+                </div>
+            </article>
+
+            <!-- Project 08 -->
+            <article class="project-card">
+                <div class="project-card-header">
+                    <p class="project-number">
+                        Project 08
+                    </p>
+
+                    <span
+                        class="
+                            project-status
+                            project-status-upcoming
+                        "
+                    >
+                        Upcoming
+                    </span>
+                </div>
+
+                <p class="card-label">
+                    Serverless Event-Driven Platform
+                </p>
+
+                <h3>
+                    Serverless Text-to-Speech Platform
+                </h3>
+
+                <p>
+                    A planned event-driven application that will convert
+                    submitted text into speech with Amazon Polly while
+                    demonstrating serverless APIs, asynchronous
+                    processing, secure storage, observability, and
+                    cost-aware architecture.
+                </p>
+
+                <ul
+                    class="project-technologies"
+                    aria-label="Text-to-speech platform technologies"
+                >
+                    <li>Amazon Polly</li>
+                    <li>Lambda</li>
+                    <li>API Gateway</li>
+                    <li>S3</li>
+                    <li>SQS</li>
+                    <li>CloudWatch</li>
+                    <li>Terraform</li>
+                </ul>
+
+            </article>
+        </div>
+    </div>
+</section>
+
+        <section id="writing" class="section writing-section">
+            <div class="container">
+                <div class="writing-heading">
+                    <p class="section-label">Writing and publications</p>
+                    <h2>Lessons from building and operating cloud platforms.</h2>
+                    <p>
+                        Practical notes on the architecture decisions,
+                        operational tradeoffs, and lessons behind my DevOps
+                        and platform engineering projects.
+                    </p>
+                </div>
+
+                <ol class="publication-list">
+                    <li>
+                        <a href="articles/jenkins-gitops.html">
+                            <span>Why Jenkins Should Not Deploy Directly to Production Kubernetes</span>
+                            <time datetime="2026-03-24">Mar 24, 2026</time>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="articles/ecs-or-eks-cost.html">
+                            <span>ECS or EKS? Choosing an AWS Container Platform with Cost in Mind</span>
+                            <time datetime="2025-12-15">Dec 15, 2025</time>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="articles/kubernetes-observability.html">
+                            <span>Building Observability and Autoscaling into Kubernetes from the Start</span>
+                            <time datetime="2026-09-11">Sep 11, 2026</time>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="articles/golden-ami-pipeline.html">
+                            <span>Golden AMIs: Creating Secure and Repeatable EC2 Foundations</span>
+                            <time datetime="2025-11-05">Nov 5, 2025</time>
+                        </a>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <section id="approach" class="section approach-section">
+            <div class="container">
+                <div class="section-heading">
+                    <p class="section-label">Engineering approach</p>
+
+                    <h2>
+                        Platforms designed for the people who operate them.
+                    </h2>
+                </div>
+
+                <div class="principles-grid">
+                    <article>
+                        <span>01</span>
+                        <h3>Automate repeatable work</h3>
+                        <p>
+                            Convert manual procedures into versioned,
+                            reviewable, and repeatable workflows.
+                        </p>
+                    </article>
+
+                    <article>
+                        <span>02</span>
+                        <h3>Make system state visible</h3>
+                        <p>
+                            Expose health, delivery status, drift, performance,
+                            and failure signals.
+                        </p>
+                    </article>
+
+                    <article>
+                        <span>03</span>
+                        <h3>Establish clear boundaries</h3>
+                        <p>
+                            Separate responsibilities across infrastructure,
+                            CI, continuous delivery, and runtime operations.
+                        </p>
+                    </article>
+
+                    <article>
+                        <span>04</span>
+                        <h3>Design for recovery</h3>
+                        <p>
+                            Treat rollback, infrastructure reconstruction,
+                            backups, and disaster recovery as architecture.
+                        </p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="section contact-section">
+            <div class="container contact-layout">
+                <div>
+                    <p class="section-label">Contact</p>
+
+                    <h2>
+                        Let’s build reliable platforms.
+                    </h2>
+                </div>
+
+                <div class="contact-content">
+                    <p>
+                        I am interested in fully remote Senior DevOps and
+                        Platform Engineer opportunities focused on cloud
+                        platforms, delivery automation, Kubernetes, GitOps,
+                        and operational reliability.
+                    </p>
+
+                    <div class="hero-actions" aria-label="Contact links">
+                        <a
+                            class="button button-primary"
+                            href="mailto:christineadelusi@gmail.com"
+                        >
+                            Email me
+                        </a>
+
+                        <a
+                            class="button button-secondary"
+                            href="https://www.linkedin.com/in/christine-adelusi-31b64512b"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            LinkedIn ↗
+                        </a>
+
+                        <a
+                            class="button button-secondary"
+                            href="https://github.com/xtinead"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            GitHub ↗
+                        </a>
+
+                        <a
+                            class="button button-secondary"
+                            href="assets/resume/christine-adelusi-resume.pdf"
+                            download
+                        >
+                            Download résumé
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-layout">
+            <p>
+                &copy; <span id="current-year"></span> Christine Adelusi
+            </p>
+
+            <a href="#home">Back to top</a>
+        </div>
+    </footer>
+</body>
+</html>

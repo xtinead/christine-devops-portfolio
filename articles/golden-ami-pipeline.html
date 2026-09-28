@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Christine Adelusi">
+    <meta name="description" content="How Christine Adelusi turned a Clixx application AMI build into a repeatable Golden AMI pipeline using Packer, Ansible, Jenkins, and AWS.">
+    <title>Golden AMIs: Secure and Repeatable EC2 Foundations | Christine Adelusi</title>
+    <script>(()=>{const s=localStorage.getItem("portfolio-theme");document.documentElement.dataset.theme=s||(matchMedia("(prefers-color-scheme: light)").matches?"light":"dark");})();</script>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/portfolio-content.css">
+    <script src="../js/main.js" defer></script>
+</head>
+<body>
+    <a class="skip-link" href="#main-content">Skip to article content</a>
+    <header class="site-header">
+        <div class="container navigation">
+            <a class="brand" href="../index.html#home" aria-label="Go to portfolio homepage">
+                <span class="brand-mark" aria-hidden="true">CA</span>
+                <span class="brand-name">Christine Adelusi</span>
+            </a>
+            <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">
+                <span class="sr-only">Open navigation menu</span>
+                <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+            </button>
+            <nav id="primary-navigation" class="primary-navigation" aria-label="Primary navigation">
+                <ul>
+                    <li><a href="../index.html#about">About</a></li>
+                    <li><a href="../index.html#capabilities">Capabilities</a></li>
+                    <li><a href="../index.html#projects">Projects</a></li>
+                    <li><a class="is-current" href="../index.html#writing" aria-current="page">Writing</a></li>
+                    <li><a href="../index.html#approach">Approach</a></li>
+                    <li><button id="theme-toggle" class="theme-toggle" type="button" aria-label="Switch to light theme" title="Switch color theme"><span class="theme-toggle-icon" aria-hidden="true">☀</span><span class="theme-toggle-text">Light</span></button></li>
+                    <li><a href="../index.html#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+<main id="main-content" class="article-page"><article class="article-container">
+    <a class="article-back" href="../index.html#writing">← Back to writing</a>
+    <header class="article-header">
+        <p class="section-label">Immutable infrastructure</p>
+        <h1>Golden AMIs: Creating Secure and Repeatable EC2 Foundations</h1>
+        <p class="article-summary">How an application-specific Clixx image build became a reusable platform-engineering pattern for versioning, validating, and promoting Amazon Machine Images.</p>
+        <p class="article-byline">November 5, 2025 · 10 min read · Christine Adelusi</p>
+    </header>
+    <nav class="table-of-contents" aria-label="Table of contents"><strong>Table of contents</strong><ol>
+        <li><a href="#origin">The Clixx origin</a></li>
+        <li><a href="#problem">The configuration problem</a></li>
+        <li><a href="#pipeline">The image pipeline</a></li>
+        <li><a href="#responsibilities">Tool responsibilities</a></li>
+        <li><a href="#validation">Validation and promotion</a></li>
+        <li><a href="#security">Security considerations</a></li>
+        <li><a href="#operations">Operational and cost lessons</a></li>
+        <li><a href="#evolution">How the pattern evolved</a></li>
+    </ol></nav>
+    <div class="article-body">
+        <h2 id="origin">The Clixx application was the starting point</h2>
+        <p>My Golden AMI work began with a practical requirement: create an Amazon Machine Image that could run the Clixx application consistently. The implementation lived across private Clixx AMI-build and Packer AMI-build repositories, but the engineering lesson was larger than one application.</p>
+        <p>I was not only packaging software. I was defining a repeatable server foundation: start from an approved source image, install and configure the required components, validate the result, register a new AMI, and make that version available to downstream infrastructure.</p>
+        <p>That changed the way I thought about EC2 delivery. Instead of launching an instance and then turning it into the desired server through a long sequence of runtime changes, I could move most of that work into a controlled image-building stage.</p>
+        <div class="article-callout"><strong>Core idea:</strong> build the server state once, validate it before use, and launch replacement instances from a known image instead of repairing long-lived servers manually.</div>
+
+        <h2 id="problem">Why runtime configuration becomes risky</h2>
+        <p>When each instance is configured after launch, successful operation depends on every installation command, package repository, configuration task, and external dependency behaving the same way every time. Two servers intended to be identical can gradually diverge because of manual fixes, package changes, or partially completed automation.</p>
+        <p>This creates configuration drift. It also makes replacement slower and recovery less predictable because a new instance must repeat the entire setup process before it can serve traffic.</p>
+        <p>A prebuilt application AMI reduces that uncertainty. The operating-system foundation and application prerequisites are assembled through a version-controlled process. Downstream instances still receive environment-specific configuration and secrets at runtime, but the stable foundation is already present.</p>
+
+        <h2 id="pipeline">The Golden AMI pipeline</h2>
+        <p>I structured the pipeline around a sequence of explicit stages:</p>
+        <ol>
+            <li><strong>Select a trusted source image.</strong> The build begins from an identified AWS base AMI rather than an arbitrary manually created instance.</li>
+            <li><strong>Create temporary build infrastructure.</strong> Packer launches an isolated EC2 builder with the network and IAM access required for the build.</li>
+            <li><strong>Apply configuration.</strong> Provisioning installs the Clixx application prerequisites and configures the reusable server foundation.</li>
+            <li><strong>Run validation.</strong> The pipeline checks that expected packages, files, permissions, and services are present before accepting the image.</li>
+            <li><strong>Create and tag the AMI.</strong> A successful build produces an immutable, identifiable image with version and traceability metadata.</li>
+            <li><strong>Promote deliberately.</strong> Downstream infrastructure consumes an approved image version rather than automatically using any newly created AMI.</li>
+            <li><strong>Clean up temporary resources.</strong> Build instances and related temporary infrastructure should not remain active after completion.</li>
+        </ol>
+        <div class="pipeline-flow" aria-label="Golden AMI pipeline flow">
+            <span>Source AMI</span><span>Packer build</span><span>Ansible configuration</span><span>Validation</span><span>Versioned AMI</span><span>Controlled promotion</span>
+        </div>
+        <p>This sequence turned the image into a build artifact rather than an undocumented server snapshot. If configuration changed, the expected action was to build a new image version—not modify an already approved image.</p>
+
+        <h2 id="responsibilities">Giving each tool one clear responsibility</h2>
+        <div class="comparison-table-wrapper"><table class="article-comparison-table">
+            <thead><tr><th>Component</th><th>Responsibility in the pipeline</th></tr></thead>
+            <tbody>
+                <tr><td>Packer</td><td>Defines the AMI build lifecycle and creates the temporary EC2 builder and resulting image.</td></tr>
+                <tr><td>Ansible</td><td>Applies repeatable operating-system and application configuration without relying on manual server changes.</td></tr>
+                <tr><td>Jenkins</td><td>Coordinates source checkout, validation, approvals, image creation, status reporting, and pipeline outcomes.</td></tr>
+                <tr><td>AWS</td><td>Provides the source image, EC2 build environment, IAM controls, AMI registration, and downstream compute platform.</td></tr>
+                <tr><td>Terraform</td><td>Allows downstream infrastructure to reference an approved image through reproducible infrastructure definitions.</td></tr>
+                <tr><td>Git</td><td>Versions the Packer templates, configuration code, pipeline definition, and engineering changes.</td></tr>
+            </tbody>
+        </table></div>
+        <p>The separation made failures easier to reason about. Packer owned image construction, Ansible owned configuration, Jenkins owned orchestration, and the consuming infrastructure owned rollout. No single script needed to hide the complete process.</p>
+
+        <h2 id="validation">A completed build is not automatically an approved image</h2>
+        <p>One of the most important distinctions in an image factory is the difference between creation and promotion. Packer can successfully register an AMI even when the application foundation is not operationally ready.</p>
+        <p>I therefore treat validation as a quality gate. Checks should confirm the properties the consuming environment depends on, including:</p>
+        <ul>
+            <li>required packages and application files are present;</li>
+            <li>expected services can start successfully;</li>
+            <li>ownership and permissions match the design;</li>
+            <li>temporary build files and credentials are absent;</li>
+            <li>the image can boot into a usable state; and</li>
+            <li>version and source metadata provide traceability.</li>
+        </ul>
+        <p>Promotion should then be explicit. A launch template, Terraform variable, or environment configuration should point to an approved AMI identifier. This prevents an unsuccessful or unreviewed build from silently becoming the next runtime foundation.</p>
+
+        <h2 id="security">Security considerations</h2>
+        <h3>Keep secrets out of the image</h3><p>An AMI can be copied, shared, or inspected by principals with sufficient access. Database passwords, API tokens, private keys, and environment-specific secrets should not be baked into it. The image should contain reusable software and configuration; secrets should be delivered through an appropriate runtime mechanism.</p>
+        <h3>Use least-privilege build roles</h3><p>The image builder needs enough AWS access to launch temporary infrastructure and create an AMI, but it should not inherit unrestricted production permissions. The Jenkins orchestration role and the temporary builder instance role serve different purposes and should be scoped separately.</p>
+        <h3>Control the source image</h3><p>A repeatable pipeline can still reproduce an unsafe foundation. Selecting a trusted and identifiable base AMI, controlling updates, and rebuilding when security fixes are required are part of the image lifecycle.</p>
+        <h3>Make provenance visible</h3><p>Tags and version metadata should connect an AMI to its source template and build. Traceability helps operators determine what is running and whether an image should be replaced.</p>
+
+        <h2 id="operations">Operational reliability and cost lessons</h2>
+        <p>Golden AMIs improve replacement and reconstruction because new instances begin closer to the desired state. They also support immutable rollout patterns: introduce instances using the new image, validate them, shift workload safely, and retire instances using the earlier version.</p>
+        <p>There is also a cost dimension. Temporary builder instances should be terminated even when a build fails. Old images and their backing snapshots require a retention policy. Rebuilding on every insignificant change can waste time and resources, while retaining every artifact indefinitely creates storage cost and operational clutter.</p>
+        <div class="article-callout"><strong>Cost-aware image management:</strong> automate cleanup of temporary builders, retain enough AMI versions for safe rollback, and remove artifacts that have exceeded the documented retention window.</div>
+        <p>The pipeline therefore needs cleanup behavior as much as build behavior. A successful image factory is not one that only creates artifacts; it also manages their lifecycle responsibly.</p>
+
+        <h2 id="evolution">From an application AMI to a platform pattern</h2>
+        <p>The first goal was to build the Clixx application image. The larger lesson was how to standardize compute foundations for multiple environments. Once the process is parameterized and governed, the same pattern can produce a base image, application image, Jenkins worker image, or other controlled EC2 foundation.</p>
+        <p>This work also gave me a useful contrast with my later container and Kubernetes projects. Containers package the application at a different layer, but the engineering principles remain recognizable: immutable artifacts, versioned definitions, validation before promotion, narrow credentials, externalized secrets, observable delivery, and predictable rollback.</p>
+        <p>The Golden AMI project demonstrates that platform engineering is not defined by Kubernetes. It is the practice of creating safe, repeatable paths that other workloads and teams can consume. In this case, the product of the platform workflow is a trusted machine image.</p>
+
+        <h2>Lessons learned</h2>
+        <ul>
+            <li>An AMI should be treated as a versioned release artifact, not a convenient snapshot.</li>
+            <li>Image creation, validation, approval, rollout, rollback, and retirement are separate lifecycle stages.</li>
+            <li>Application secrets and environment-specific state should remain outside the reusable image.</li>
+            <li>Temporary build infrastructure and obsolete snapshots need deliberate cleanup controls.</li>
+            <li>The ability to rebuild an image from code is more valuable than preserving a manually configured server.</li>
+        </ul>
+        <p>What started as a Clixx application requirement became a broader infrastructure pattern: define the foundation in code, build it consistently, verify it before use, promote it deliberately, and replace it instead of modifying it in place.</p>
+
+        <section class="article-resources"><h2>Related public portfolio material</h2><ul>
+            <li><a href="https://github.com/xtinead/clixx-gitops-platform">Clixx GitOps Platform repository</a></li>
+            <li><a href="https://xtinead.github.io/clixx-gitops-platform/platform-evolution.html">Clixx platform evolution</a></li>
+            <li><a href="https://xtinead.github.io/clixx-gitops-platform/platform-infra/teardown-rebuild.html">Infrastructure teardown and rebuild strategy</a></li>
+        </ul><p>The underlying Clixx AMI-build and Packer implementation repositories are private. This article describes the engineering approach without exposing private source code or credentials.</p></section>
+    </div>
+</article></main>
+</body>
+</html>
