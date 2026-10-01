@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Christine Adelusi">
+    <meta name="description" content="How Christine Adelusi designed the Clixx GitOps Platform for safe teardown, reproducible rebuilding, team ownership, and operational recovery.">
+    <link rel="canonical" href="https://xtinead.github.io/christine-devops-portfolio/articles/rebuildable-by-design-clixx-gitops.html">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Christine Adelusi DevOps and Platform Engineering Portfolio">
+    <meta property="og:url" content="https://xtinead.github.io/christine-devops-portfolio/articles/rebuildable-by-design-clixx-gitops.html">
+    <meta property="og:title" content="Rebuildable by Design: The Clixx GitOps Platform | Christine Adelusi">
+    <meta property="og:description" content="How the Clixx GitOps Platform uses clear ownership, protected state, automation, and validation to make infrastructure teardown and rebuilding repeatable for a team.">
+    <meta property="og:image" content="https://xtinead.github.io/christine-devops-portfolio/assets/images/christine-adelusi-portfolio-preview.png">
+    <meta property="og:image:alt" content="Christine Adelusi Senior DevOps and Platform Engineer portfolio">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Rebuildable by Design: The Clixx GitOps Platform | Christine Adelusi">
+    <meta name="twitter:description" content="How the Clixx GitOps Platform makes infrastructure teardown, recovery, and rebuilding repeatable for a team.">
+    <meta name="twitter:image" content="https://xtinead.github.io/christine-devops-portfolio/assets/images/christine-adelusi-portfolio-preview.png">
+    <link rel="icon" href="../assets/images/favicon.svg" type="image/svg+xml">
+    <title>Rebuildable by Design: The Clixx GitOps Platform | Christine Adelusi</title>
+    <script>(()=>{const s=localStorage.getItem("portfolio-theme");document.documentElement.dataset.theme=s||(matchMedia("(prefers-color-scheme: light)").matches?"light":"dark");})();</script>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/portfolio-content.css">
+    <script src="../js/main.js" defer></script>
+</head>
+<body>
+    <a class="skip-link" href="#main-content">Skip to article content</a>
+    <header class="site-header">
+        <div class="container navigation">
+            <a class="brand" href="../index.html#home" aria-label="Go to portfolio homepage"><span class="brand-mark" aria-hidden="true">CA</span><span class="brand-name">Christine Adelusi</span></a>
+            <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation"><span class="sr-only">Open navigation menu</span><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span></button>
+            <nav id="primary-navigation" class="primary-navigation" aria-label="Primary navigation">
+                <ul>
+                    <li><a href="../index.html#about">About</a></li>
+                    <li><a href="../index.html#capabilities">Capabilities</a></li>
+                    <li><a href="../index.html#projects">Projects</a></li>
+                    <li><a class="is-current" href="../index.html#writing" aria-current="page">Writing</a></li>
+                    <li><a href="../index.html#approach">Approach</a></li>
+                    <li><button id="theme-toggle" class="theme-toggle" type="button" aria-label="Switch to light theme" title="Switch color theme"><span class="theme-toggle-icon" aria-hidden="true">☀</span><span class="theme-toggle-text">Light</span></button></li>
+                    <li><a href="../index.html#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main-content" class="article-page">
+        <article class="article-container">
+            <a class="article-back" href="../index.html#writing">← Back to writing</a>
+            <header class="article-header">
+                <p class="section-label">Reproducible infrastructure and recovery</p>
+                <h1>Rebuildable by Design: What the Clixx GitOps Platform Taught Me About Reproducible Infrastructure</h1>
+                <p class="article-summary">Why a platform is not truly reproducible until another engineer can deploy it, validate it, tear down disposable components safely, and rebuild it without undocumented knowledge.</p>
+                <p class="article-byline">September 26, 2026 · 9 min read · Christine Adelusi</p>
+            </header>
+
+            <nav class="table-of-contents" aria-label="Table of contents">
+                <strong>Table of contents</strong>
+                <ol>
+                    <li><a href="#requirement">Reproducibility as an operational requirement</a></li>
+                    <li><a href="#boundaries">Clear ownership boundaries</a></li>
+                    <li><a href="#state">Protecting state and data</a></li>
+                    <li><a href="#team">A repeatable team workflow</a></li>
+                    <li><a href="#teardown">What teardown testing reveals</a></li>
+                    <li><a href="#workplace">Workplace impact</a></li>
+                    <li><a href="#skills">Skills demonstrated</a></li>
+                </ol>
+            </nav>
+
+            <div class="article-body">
+                <p>Cloud infrastructure is not truly reproducible because a deployment succeeds once. It is reproducible when another engineer can follow the documented process, create the same platform, validate it, tear down the disposable parts safely, and rebuild them without relying on undocumented knowledge.</p>
+                <p>That principle shaped the Clixx GitOps Platform, a production-style AWS and Kubernetes project built with Terraform, Jenkins, Amazon EKS, Amazon ECR, and Argo CD. The platform was designed not only to deploy a WordPress application, but also to make ownership, recovery, change control, and reconstruction explicit.</p>
+                <div class="article-callout"><strong>Workplace value:</strong> the ability to rebuild a platform is evidence that the architecture is understood, the automation is complete, and operational knowledge is not trapped with one engineer.</div>
+
+                <figure class="article-figure">
+                    <img src="https://xtinead.github.io/clixx-gitops-platform/assets/images/01-clixx-gitops-platform-architecture.png" alt="Clixx GitOps platform architecture showing AWS, Terraform, Jenkins, EKS, and Argo CD components">
+                    <figcaption>The Clixx platform separates infrastructure provisioning, CI orchestration, GitOps delivery, and runtime reconciliation.</figcaption>
+                </figure>
+
+                <h2 id="requirement">Reproducibility is an operational requirement</h2>
+                <p>Infrastructure as Code is an important part of reproducibility, but Terraform files alone do not guarantee a reliable rebuild. A platform can still depend on manually created resources, unclear state ownership, local secrets, undocumented deployment steps, direct <code>kubectl</code> changes, hidden dependencies, or teardown procedures that fail when cloud resources retain attachments.</p>
+                <p>For Clixx, I treated teardown and rebuild as lifecycle operations rather than emergency procedures. The goal was to make the path from an empty environment to a validated application understandable and repeatable.</p>
+
+                <h2 id="boundaries">Designing clear ownership boundaries</h2>
+                <p>Terraform owns the AWS and Kubernetes infrastructure. Jenkins validates changes, creates reviewed Terraform plans, builds immutable application images, and publishes them to Amazon ECR. Git stores desired application state. Argo CD reconciles that state into Amazon EKS.</p>
+                <p>This separation prevents the CI server from becoming an all-powerful deployment host. Jenkins does not need direct production <code>kubectl</code> access. An application release becomes a Git change that can be reviewed, audited, reverted, and reconciled by Argo CD.</p>
+                <p>The platform is also separated into lifecycle layers:</p>
+                <ol>
+                    <li><strong>Bootstrap:</strong> protected remote Terraform state using Amazon S3 and DynamoDB.</li>
+                    <li><strong>Platform infrastructure:</strong> networking, EKS, IAM integrations, RDS, EFS, ingress dependencies, and supporting AWS services.</li>
+                    <li><strong>GitOps:</strong> Argo CD installation and the connection between the cluster and declared application state.</li>
+                </ol>
+                <p>These boundaries reduce blast radius and clarify which layer must exist before another can be created or destroyed.</p>
+
+                <h2 id="state">Protecting state while rebuilding infrastructure</h2>
+                <p>Rebuildability does not mean deleting everything indiscriminately. Clixx contains relational data in Amazon RDS and uploaded application content on Amazon EFS. Those resources require a different lifecycle from replaceable compute resources such as Kubernetes nodes, controllers, and pods.</p>
+                <p>The teardown design distinguishes disposable infrastructure from protected data. Backup, snapshot, retention, and restore decisions are made before destructive operations begin. Terraform state is stored remotely and locked to prevent concurrent changes, while environment configuration is versioned without storing credentials in Git.</p>
+                <div class="article-callout"><strong>Recovery principle:</strong> a rebuild process is only useful when it restores the service without creating an avoidable data-loss event.</div>
+
+                <h2 id="team">Making the pipeline repeatable for the team</h2>
+                <p>A team-ready workflow needs guardrails and evidence, not merely a collection of commands. The Clixx workflow uses Terraform validation and saved plans so the reviewed plan is the artifact applied after approval. Jenkins assumes AWS roles with temporary credentials, and environment and layer parameters make the execution target explicit.</p>
+                <p>After rebuilding, validation checks cluster readiness, Argo CD reconciliation, application health, ingress routing, persistent storage, database connectivity, autoscaling resources, and monitoring signals.</p>
+                <p>Another engineer should be able to answer:</p>
+                <ul>
+                    <li>What am I changing, and which environment and layer am I targeting?</li>
+                    <li>What state and data are protected?</li>
+                    <li>What evidence should I review before approval?</li>
+                    <li>How do I confirm that the rebuild succeeded?</li>
+                    <li>How do I roll back or investigate a failure?</li>
+                </ul>
+                <p>If those answers exist only in one person’s memory, the platform is not operationally mature.</p>
+
+                <h2 id="teardown">What teardown testing reveals</h2>
+                <p>Building is usually the easiest path through a cloud platform. Teardown exposes hidden ownership problems. Resources may remain because a repository is not empty, a network interface is attached, a security group is referenced, a controller has not completed cleanup, or a resource was created outside the expected state.</p>
+                <p>These are not just cleanup inconveniences. They reveal gaps in dependency management, ownership, sequencing, and verification. Testing teardown taught me to use prechecks, explicit safeguards, bounded cleanup logic, and post-destroy verification. A successful command is not enough; the process must confirm that intended resources are gone while unrelated account infrastructure remains untouched.</p>
+
+                <h2 id="workplace">How this applies in a work environment</h2>
+                <p>Reproducibility shortens onboarding because new engineers can follow documented workflows instead of reverse-engineering the platform. It improves review because saved plans and Git history show what will change. It reduces key-person risk by moving operational knowledge into version-controlled automation and runbooks. It also improves environment consistency because development, staging, and production share an architecture with controlled configuration differences.</p>
+                <p>During an incident, a team that knows how infrastructure is created, where state is stored, which data is protected, and how health is validated can treat recovery as a practiced workflow rather than an improvised series of console actions.</p>
+
+                <h2 id="skills">Skills demonstrated through the Clixx platform</h2>
+                <ul>
+                    <li>Layered AWS and Kubernetes architecture design</li>
+                    <li>Reusable Terraform workflows with protected remote state</li>
+                    <li>IAM roles, OIDC integration, and temporary credentials</li>
+                    <li>Separation of CI responsibilities from GitOps delivery</li>
+                    <li>Persistent-data protection and disaster-recovery planning</li>
+                    <li>Dependency, lifecycle, and state-management troubleshooting</li>
+                    <li>Approval, rollback, validation, and teardown guardrails</li>
+                    <li>Documentation that enables other engineers to operate the platform</li>
+                </ul>
+
+                <h2>Final lesson</h2>
+                <p>A platform is not finished when it can be deployed. It is operationally mature when it can be changed, validated, recovered, and rebuilt through a process the team understands.</p>
+                <p>The Clixx GitOps Platform moved my thinking beyond infrastructure as a collection of resources. I now treat it as a lifecycle: provision, validate, operate, change, recover, destroy, and rebuild. That lifecycle mindset is central to how I approach Senior DevOps and Platform Engineering work.</p>
+
+                <section class="article-resources">
+                    <h2>Related project documentation</h2>
+                    <ul>
+                        <li><a href="https://github.com/xtinead/clixx-gitops-platform">Clixx GitOps Platform repository</a></li>
+                        <li><a href="https://xtinead.github.io/clixx-gitops-platform/platform-infra/teardown-rebuild.html">Teardown and rebuild strategy</a></li>
+                        <li><a href="https://xtinead.github.io/clixx-gitops-platform/platform-infra/architecture.html">Platform architecture</a></li>
+                        <li><a href="https://xtinead.github.io/clixx-gitops-platform/platform-gitops/gitops-flow.html">GitOps delivery model</a></li>
+                    </ul>
+                </section>
+            </div>
+        </article>
+    </main>
+</body>
+</html>

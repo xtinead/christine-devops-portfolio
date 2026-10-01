@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="500" viewBox="0 0 1200 500" role="img" aria-labelledby="title desc">
+  <title id="title">Platform Launchpad environment lifecycle</title>
+  <desc id="desc">Environment states move from pending to provisioning to active to destroying to destroyed. Provisioning, active, and destroying operations may enter a retained failed state for investigation and recovery.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#071520"/><stop offset="1" stop-color="#0d2430"/></linearGradient>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#4be1bd"/></marker>
+    <marker id="fail-arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#f0bf55"/></marker>
+  </defs>
+  <rect width="1200" height="500" rx="28" fill="url(#bg)"/>
+  <text x="60" y="70" fill="#f2faf8" font-family="Arial, sans-serif" font-size="30" font-weight="700">Environment lifecycle as a platform contract</text>
+  <text x="60" y="105" fill="#91a9b7" font-family="Arial, sans-serif" font-size="17">Every transition is explicit, observable, and recoverable.</text>
+  <g font-family="Arial, sans-serif" text-anchor="middle">
+    <g fill="#102a36" stroke="#4be1bd" stroke-width="2">
+      <rect x="55" y="185" width="170" height="85" rx="16"/>
+      <rect x="280" y="185" width="180" height="85" rx="16"/>
+      <rect x="515" y="185" width="170" height="85" rx="16"/>
+      <rect x="740" y="185" width="180" height="85" rx="16"/>
+      <rect x="975" y="185" width="170" height="85" rx="16"/>
+    </g>
+    <g fill="#f2faf8" font-size="19" font-weight="700">
+      <text x="140" y="238">Pending</text><text x="370" y="238">Provisioning</text><text x="600" y="238">Active</text><text x="830" y="238">Destroying</text><text x="1060" y="238">Destroyed</text>
+    </g>
+  </g>
+  <g fill="none" stroke="#4be1bd" stroke-width="3" marker-end="url(#arrow)">
+    <path d="M225 227 H275"/><path d="M460 227 H510"/><path d="M685 227 H735"/><path d="M920 227 H970"/>
+  </g>
+  <rect x="500" y="365" width="200" height="82" rx="16" fill="#2a2416" stroke="#f0bf55" stroke-width="2"/>
+  <text x="600" y="415" text-anchor="middle" fill="#f0bf55" font-family="Arial, sans-serif" font-size="20" font-weight="700">Failed</text>
+  <g fill="none" stroke="#f0bf55" stroke-width="2.5" stroke-dasharray="7 6" marker-end="url(#fail-arrow)">
+    <path d="M370 270 C370 330 510 325 545 360"/>
+    <path d="M600 270 V360"/>
+    <path d="M830 270 C830 330 690 325 655 360"/>
+  </g>
+  <text x="735" y="415" fill="#c8a75d" font-family="Arial, sans-serif" font-size="14">Context retained for investigation, retry, or cleanup</text>
+</svg>

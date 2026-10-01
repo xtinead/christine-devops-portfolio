@@ -1,5 +1,87 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="author" content="Christine Adelusi"><meta name="description" content="Why Jenkins should not deploy directly to production Kubernetes: a Clixx GitOps platform case study."><title>Jenkins and Production Kubernetes | Christine Adelusi</title><script>(()=>{const s=localStorage.getItem('portfolio-theme');document.documentElement.dataset.theme=s||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark')})();</script><link rel="stylesheet" href="../css/styles.css"><link rel="stylesheet" href="../css/portfolio-content.css"><script src="../js/main.js" defer></script></head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Christine Adelusi">
+    <meta
+        name="description"
+        content="Why Jenkins should not deploy directly to production Kubernetes: a Clixx GitOps platform case study."
+    >
+
+    <link
+        rel="canonical"
+        href="https://xtinead.github.io/christine-devops-portfolio/articles/jenkins-gitops.html"
+    >
+
+    <meta property="og:type" content="article">
+    <meta
+        property="og:site_name"
+        content="Christine Adelusi DevOps and Platform Engineering Portfolio"
+    >
+    <meta
+        property="og:url"
+        content="https://xtinead.github.io/christine-devops-portfolio/articles/jenkins-gitops.html"
+    >
+    <meta
+        property="og:title"
+        content="Jenkins and Production Kubernetes | Christine Adelusi"
+    >
+    <meta
+        property="og:description"
+        content="Why Jenkins should not deploy directly to production Kubernetes: a Clixx GitOps platform case study."
+    >
+    <meta
+        property="og:image"
+        content="https://xtinead.github.io/christine-devops-portfolio/assets/images/christine-adelusi-portfolio-preview.png"
+    >
+    <meta
+        property="og:image:alt"
+        content="Christine Adelusi Senior DevOps and Platform Engineer portfolio"
+    >
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta
+        name="twitter:title"
+        content="Jenkins and Production Kubernetes | Christine Adelusi"
+    >
+    <meta
+        name="twitter:description"
+        content="Why Jenkins should not deploy directly to production Kubernetes: a Clixx GitOps platform case study."
+    >
+    <meta
+        name="twitter:image"
+        content="https://xtinead.github.io/christine-devops-portfolio/assets/images/christine-adelusi-portfolio-preview.png"
+    >
+
+    <link
+        rel="icon"
+        href="../assets/images/favicon.svg"
+        type="image/svg+xml"
+    >
+
+    <title>Jenkins and Production Kubernetes | Christine Adelusi</title>
+
+    <script>
+        (() => {
+            const savedTheme = localStorage.getItem("portfolio-theme");
+            const preferredTheme = matchMedia(
+                "(prefers-color-scheme: light)"
+            ).matches
+                ? "light"
+                : "dark";
+
+            document.documentElement.dataset.theme =
+                savedTheme || preferredTheme;
+        })();
+    </script>
+
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/portfolio-content.css">
+    <script src="../js/main.js" defer></script>
+</head>
 <body>
     <a class="skip-link" href="#main-content">Skip to article content</a>
     <header class="site-header"><div class="container navigation">

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Christine Adelusi">
+    <meta name="description" content="Christine Adelusi shares lessons learned while building Platform Launchpad, a developer self-service platform for governed environment lifecycle automation.">
+    <link rel="canonical" href="https://xtinead.github.io/christine-devops-portfolio/articles/building-platform-launchpad.html">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Christine Adelusi DevOps and Platform Engineering Portfolio">
+    <meta property="og:url" content="https://xtinead.github.io/christine-devops-portfolio/articles/building-platform-launchpad.html">
+    <meta property="og:title" content="Building Platform Launchpad: Lessons Learned | Christine Adelusi">
+    <meta property="og:description" content="Lessons from designing a developer self-service platform around lifecycle state, asynchronous work, security boundaries, teardown, and recovery.">
+    <meta property="og:image" content="https://xtinead.github.io/christine-devops-portfolio/assets/images/christine-adelusi-portfolio-preview.png">
+    <meta property="og:image:alt" content="Christine Adelusi Senior DevOps and Platform Engineer portfolio">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Building Platform Launchpad: Lessons Learned | Christine Adelusi">
+    <meta name="twitter:description" content="Lessons from building a developer self-service platform around lifecycle state, asynchronous automation, teardown, and recovery.">
+    <meta name="twitter:image" content="https://xtinead.github.io/christine-devops-portfolio/assets/images/christine-adelusi-portfolio-preview.png">
+    <link rel="icon" href="../assets/images/favicon.svg" type="image/svg+xml">
+    <title>Building Platform Launchpad: Lessons Learned | Christine Adelusi</title>
+    <script>(()=>{const s=localStorage.getItem("portfolio-theme");document.documentElement.dataset.theme=s||(matchMedia("(prefers-color-scheme: light)").matches?"light":"dark");})();</script>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/portfolio-content.css">
+    <script src="../js/main.js" defer></script>
+</head>
+<body>
+    <a class="skip-link" href="#main-content">Skip to article content</a>
+    <header class="site-header">
+        <div class="container navigation">
+            <a class="brand" href="../index.html#home" aria-label="Go to portfolio homepage"><span class="brand-mark" aria-hidden="true">CA</span><span class="brand-name">Christine Adelusi</span></a>
+            <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation"><span class="sr-only">Open navigation menu</span><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span></button>
+            <nav id="primary-navigation" class="primary-navigation" aria-label="Primary navigation">
+                <ul>
+                    <li><a href="../index.html#about">About</a></li>
+                    <li><a href="../index.html#capabilities">Capabilities</a></li>
+                    <li><a href="../index.html#projects">Projects</a></li>
+                    <li><a class="is-current" href="../index.html#writing" aria-current="page">Writing</a></li>
+                    <li><a href="../index.html#approach">Approach</a></li>
+                    <li><button id="theme-toggle" class="theme-toggle" type="button" aria-label="Switch to light theme" title="Switch color theme"><span class="theme-toggle-icon" aria-hidden="true">☀</span><span class="theme-toggle-text">Light</span></button></li>
+                    <li><a href="../index.html#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main-content" class="article-page">
+        <article class="article-container">
+            <a class="article-back" href="../index.html#writing">← Back to writing</a>
+            <header class="article-header">
+                <p class="section-label">Internal developer platforms</p>
+                <h1>Building Platform Launchpad: Lessons from Designing a Developer Self-Service Platform</h1>
+                <p class="article-summary">What I am learning while combining product thinking, API design, asynchronous automation, infrastructure lifecycle management, GitOps, and developer experience in one evolving platform.</p>
+                <p class="article-byline">October 1, 2026 · 12 min read · Christine Adelusi</p>
+            </header>
+
+            <nav class="table-of-contents" aria-label="Table of contents">
+                <strong>Table of contents</strong>
+                <ol>
+                    <li><a href="#goal">What Platform Launchpad aims to accomplish</a></li>
+                    <li><a href="#product">A platform is a product</a></li>
+                    <li><a href="#lifecycle">Model the lifecycle first</a></li>
+                    <li><a href="#async">Asynchronous work changes the architecture</a></li>
+                    <li><a href="#failure">Failure is a first-class state</a></li>
+                    <li><a href="#teardown">Teardown is a product capability</a></li>
+                    <li><a href="#security">Security follows responsibilities</a></li>
+                    <li><a href="#documentation">Documentation is architecture</a></li>
+                    <li><a href="#next">What comes next</a></li>
+                </ol>
+            </nav>
+
+            <div class="article-body">
+                <p>Platform Launchpad is the project I am currently building to explore a question that many engineering organizations face: how can developers request and manage environments without needing to understand every Terraform module, Jenkins stage, Kubernetes object, or AWS dependency behind the platform?</p>
+                <p>The project is an internal developer platform demonstration. It is not intended to replace a developer’s code editor. Instead, it provides a developer-facing control plane where authenticated users can request environments, follow their lifecycle, and eventually interact with standardized infrastructure workflows through a consistent interface.</p>
+                <div class="article-callout"><strong>Current status:</strong> Platform Launchpad is being built incrementally. This article distinguishes the application and delivery foundation already established from the deeper self-service integrations that remain milestone-dependent.</div>
+
+                <figure class="article-figure">
+                    <img src="../assets/images/platform-launchpad-architecture.svg" alt="Platform Launchpad architecture showing a Next.js portal, FastAPI, PostgreSQL, Redis, a Python worker, Jenkins, ECR, Terraform, GitOps, Argo CD, and EKS">
+                    <figcaption>Platform Launchpad connects a developer-facing application to a controlled platform-delivery path.</figcaption>
+                </figure>
+
+                <h2 id="goal">What Platform Launchpad aims to accomplish</h2>
+                <p>The long-term goal is to give developers a self-service path to approved platform capabilities while keeping infrastructure ownership and operational guardrails with the platform team.</p>
+                <p>The planned experience is straightforward: an authenticated user submits an environment request, the platform records it, background automation processes it, and the user can see whether the environment is pending, provisioning, active, destroying, destroyed, or failed.</p>
+                <p>Behind that workflow is a broader architecture:</p>
+                <ul>
+                    <li>Next.js and TypeScript for the developer experience;</li>
+                    <li>FastAPI for authentication, authorization, validation, and API boundaries;</li>
+                    <li>PostgreSQL for durable application and audit state;</li>
+                    <li>Redis and a Python worker for asynchronous work;</li>
+                    <li>Jenkins and Amazon ECR for controlled CI and immutable images;</li>
+                    <li>Terraform for AWS infrastructure; and</li>
+                    <li>Amazon EKS, GitOps, and Argo CD for declarative runtime delivery.</li>
+                </ul>
+                <p>The API, local application foundation, PostgreSQL environment, architecture documentation, container workflow, Terraform infrastructure, CI design, GitOps repository, and teardown hardening form the current foundation. Deeper application-driven integrations with Jenkins, Terraform, Kubernetes, GitHub, and AWS APIs remain planned work.</p>
+
+                <h2 id="product">Lesson 1: A platform is a product</h2>
+                <p>An internal platform cannot be designed only from the infrastructure team’s perspective. A developer should not need to know which Terraform directory to enter, which variables to supply, which Jenkins job to run, or which Kubernetes namespace to inspect. The platform should translate an intent such as “create a development environment” into a governed workflow.</p>
+                <p>That requires product thinking. The interface must make valid actions obvious, reject invalid requests early, show progress clearly, and provide useful failure information. Documentation, naming, defaults, permissions, and status messages are part of the platform experience—not secondary work added after provisioning succeeds.</p>
+
+                <h2 id="lifecycle">Lesson 2: Model the lifecycle before building the buttons</h2>
+                <p>It is tempting to begin a developer portal with screens and forms. I learned that the more important starting point is the lifecycle model.</p>
+
+                <figure class="article-figure">
+                    <img src="../assets/images/platform-launchpad-lifecycle.svg" alt="Platform Launchpad lifecycle from pending through provisioning, active, destroying, and destroyed, with failed states retained for investigation">
+                    <figcaption>The lifecycle model provides a shared contract for the frontend, API, worker, database, and automation systems.</figcaption>
+                </figure>
+
+                <p>These states define valid actions and what the system must remember. An environment should not accept another provisioning request while one is running. A failed request should retain enough context for investigation. A destroy operation must remain distinguishable from a failed provision operation.</p>
+                <p>The broader lesson is that workflow design should come before interface polish. Clear states make automation, testing, retries, authorization, and user communication easier to reason about.</p>
+
+                <h2 id="async">Lesson 3: Asynchronous work changes the architecture</h2>
+                <p>Infrastructure operations can take several minutes and fail for reasons outside the web application. A FastAPI request should not remain open while Terraform creates networking, EKS, IAM, or database resources.</p>
+                <p>This led to an asynchronous design: the API validates and records a request, persistent state tracks the workflow, and a worker processes long-running operations. The user receives an identifier and can return later to inspect progress.</p>
+                <p>That design introduces production-grade questions:</p>
+                <ul>
+                    <li>How are duplicate requests prevented?</li>
+                    <li>Which operations are idempotent and safe to retry?</li>
+                    <li>How is a partially completed workflow resumed?</li>
+                    <li>What evidence is stored for auditing and troubleshooting?</li>
+                    <li>How are timeouts and external failures represented?</li>
+                    <li>Which component is authorized to change environment state?</li>
+                </ul>
+                <p>Building Platform Launchpad has made me more deliberate about durable state, retry boundaries, idempotency, and observable background work.</p>
+
+                <h2 id="failure">Lesson 4: Failure must be a first-class state</h2>
+                <p>An internal platform should not present every failed workflow as a generic error banner. Infrastructure failures contain useful context: the requested environment, the action attempted, the automation run, the last successful step, and resources that may have been created.</p>
+                <p>The <code>Failed</code> state is therefore part of the lifecycle. It supports investigation, controlled retry, cleanup, and future audit capabilities. A mature platform API must define partial success, delayed work, cancellation, retry, and failure—not only successful responses.</p>
+
+                <h2 id="teardown">Lesson 5: Teardown is a product capability</h2>
+                <p>Environment creation is the most visible feature, but safe destruction is equally important. During teardown testing, I encountered real AWS lifecycle blockers: a non-empty ECR repository, a Jenkins IAM access key, a detached EKS network interface, and an orphaned EKS security group.</p>
+                <p>Resolving them required more than force-delete flags. The workflow needed ownership-aware cleanup, pre-destroy preparation, bounded remediation, recovery guidance after partial destruction, and verification that only intended development resources were removed.</p>
+                <div class="article-callout"><strong>Platform principle:</strong> a self-service platform should not offer a “Destroy” action unless the underlying process is safe, observable, and recoverable.</div>
+
+                <h2 id="security">Lesson 6: Security boundaries should follow responsibilities</h2>
+                <p>The FastAPI backend is the application authorization boundary. Jenkins should receive only the permissions needed for its delivery responsibilities. GitOps should own declared Kubernetes deployment state. Runtime workloads should use workload-specific AWS identities rather than shared credentials.</p>
+                <p>This prevents the portal from becoming a single service with unrestricted access across every platform layer. It reflects how I would design an internal platform at work: minimize standing privilege, separate control-plane responsibilities, retain audit evidence, and make sensitive operations explicit.</p>
+
+                <h2 id="documentation">Lesson 7: Documentation is part of the architecture</h2>
+                <p>Platform Launchpad spans several boundaries: browser to frontend, frontend to API, API to PostgreSQL and Redis, worker to automation, Jenkins to AWS, and Argo CD to Kubernetes. Writing documentation exposed assumptions that were easy to miss in code.</p>
+                <p>Who owns each state transition? Which data must survive a restart? What happens if provisioning succeeds but status persistence fails? Which repository is authoritative for deployment state? How should a partially destroyed environment be recovered?</p>
+                <p>Architecture diagrams, runbooks, case studies, and decision records make those questions visible. They also make the project easier for another engineer—or a recruiter evaluating my work—to understand.</p>
+
+                <h2>What the project demonstrates so far</h2>
+                <ul>
+                    <li>Application and infrastructure boundary design</li>
+                    <li>FastAPI APIs and PostgreSQL-backed persistent state</li>
+                    <li>Asynchronous workflow planning with Redis and Python workers</li>
+                    <li>Containerized local development workflows</li>
+                    <li>Jenkins, ECR, Terraform, Kubernetes, and GitOps delivery design</li>
+                    <li>Resource lifecycle and failure-state modeling</li>
+                    <li>Teardown and recovery hardening</li>
+                    <li>Architecture and operational documentation</li>
+                    <li>Developer experience as an engineering requirement</li>
+                </ul>
+                <p>The project also shows how I work through ambiguity: build in milestones, validate one boundary at a time, document what is implemented, and label planned integrations honestly.</p>
+
+                <h2 id="next">What comes next</h2>
+                <p>The next stages will deepen the connection between the application and automation layers: expanding the worker and queue workflow, integrating controlled environment actions with Jenkins and Terraform, improving status and audit visibility, and connecting GitOps deployment state back to the developer experience.</p>
+                <p>The objective is not to hide infrastructure completely. It is to give developers a safer and more consistent way to consume it while preserving the controls the platform team needs.</p>
+
+                <h2>Final lesson</h2>
+                <p>The hardest part of a developer platform is not creating a form that starts automation. The more valuable work is defining lifecycle state, responsibility boundaries, failure behavior, permissions, auditability, recovery, and a user experience developers can trust.</p>
+                <p>That combination of software design and operational engineering is why I chose Platform Launchpad. It gives me a practical way to explore Senior Platform Engineer responsibilities while building a credible internal developer platform demonstration that can continue to grow.</p>
+
+                <section class="article-resources">
+                    <h2>Related project resources</h2>
+                    <ul>
+                        <li><a href="https://github.com/xtinead/platform-launchpad">Platform Launchpad application repository</a></li>
+                        <li><a href="https://github.com/xtinead/platform-launchpad-gitops">Platform Launchpad GitOps repository</a></li>
+                    </ul>
+                </section>
+            </div>
+        </article>
+    </main>
+</body>
+</html>
